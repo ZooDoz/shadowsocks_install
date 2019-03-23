@@ -279,10 +279,12 @@ EOF
 firewall_set(){
     echo -e "[${green}Info${plain}] firewall set start..."
     if centosversion 6; then
+         echo -e "[${green}Info${plain}] firewall set for 6..."
         /etc/init.d/iptables status > /dev/null 2>&1
         if [ $? -eq 0 ]; then
             iptables -L -n | grep -i ${shadowsocksport} > /dev/null 2>&1
             if [ $? -ne 0 ]; then
+                echo -e "[${green}Info${plain}] firewall set real for 6..."
                 iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport ${shadowsocksport} -j ACCEPT
                 iptables -I INPUT -m state --state NEW -m udp -p udp --dport ${shadowsocksport} -j ACCEPT
                 /etc/init.d/iptables save
@@ -294,8 +296,10 @@ firewall_set(){
             echo -e "[${yellow}Warning${plain}] iptables looks like shutdown or not installed, please manually set it if necessary."
         fi
     elif centosversion 7; then
+        echo -e "[${green}Info${plain}] firewall set for 7..."
         systemctl status firewalld > /dev/null 2>&1
         if [ $? -eq 0 ]; then
+            echo -e "[${green}Info${plain}] firewall set real for 7..."
             firewall-cmd --permanent --zone=public --add-port=${shadowsocksport}/tcp
             firewall-cmd --permanent --zone=public --add-port=${shadowsocksport}/udp
             firewall-cmd --reload
